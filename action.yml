@@ -12,6 +12,10 @@ inputs:
     default: "1.18"
   gpg_fingerprint:
     description: "GPG fingerprint to use for signing releases"
+  release_repository:
+    description: "Repository to create the release in, defaults to `github.repository` if unspecified"
+  release_token:
+    description: "GitHub token to use for creating the release, defaults to `github.token` if unspecified"
   release_tag:
     description: "Tag that the release should be created from, defaults to `github.ref` if unspecified"
   release_title_prefix:
@@ -34,10 +38,30 @@ runs:
         else
           token="$DEFAULT_TOKEN"
         fi
+        if [ -n "$RELEASE_TOKEN" ]; then
+          release_token="$RELEASE_TOKEN"
+        else
+          release_token="$token"
+        fi
         echo "TOKEN=$token" >> "$GITHUB_OUTPUT"
+        echo "RELEASE_TOKEN=$release_token" >> "$GITHUB_OUTPUT"
       env:
         DEFAULT_TOKEN: ${{ github.token }}
         INPUT_TOKEN: ${{ inputs.github_token }}
+        RELEASE_TOKEN: ${{ inputs.release_token }}
+      shell: bash
+
+    - id: determine_release_repository
+      run: |
+        if [ -n "$INPUT_REPO" ]; then
+          release_repo="$INPUT_REPO"
+        else
+          release_repo="$DEFAULT_REPO"
+        fi
+        echo "RELEASE_REPOSITORY=$release_repo" >> "$GITHUB_OUTPUT"
+      env:
+        DEFAULT_REPO: ${{ github.repository }}
+        INPUT_REPO: ${{ inputs.release_repository }}
       shell: bash
 
     - id: determine_release_tag
@@ -71,6 +95,8 @@ runs:
       env:
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_TOKEN: ${{ steps.determine_token.outputs.TOKEN }}
+        RELEASE_REPOSITORY: ${{ steps.determine_release_repository.outputs.RELEASE_REPOSITORY }}
+        RELEASE_TOKEN: ${{ steps.determine_token.outputs.RELEASE_TOKEN }}
         GPG_FINGERPRINT: ${{ inputs.gpg_fingerprint }}
         GH_EXT_BUILD_SCRIPT: ${{ inputs.build_script_override }}
         GH_RELEASE_TAG: ${{ steps.determine_release_tag.outputs.TAG }}
