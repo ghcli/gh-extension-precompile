@@ -76,6 +76,7 @@ else
   gh release create "$GH_RELEASE_TAG" $prerelease $draft_release --title="${GH_RELEASE_TITLE_PREFIX} ${GH_RELEASE_TAG#v}" --generate-notes -- "${assets[@]}"
 fi
 if [ "$GITHUB_REPOSITORY" != "$RELEASE_REPOSITORY" ]; then
+  export GITHUB_TOKEN="$RELEASE_TOKEN"
   if gh release view "$GH_RELEASE_TAG" -R "${RELEASE_REPOSITORY}" >/dev/null; then
     echo "uploading assets to an existing release..."
     gh release upload "$GH_RELEASE_TAG" -R "${RELEASE_REPOSITORY}" --clobber -- "${assets[@]}"  
