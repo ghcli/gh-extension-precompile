@@ -94,9 +94,9 @@ runs:
     - run: ${GITHUB_ACTION_PATH//\\//}/build_and_release.sh
       env:
         GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_TOKEN: ${{ steps.determine_token.outputs.TOKEN }}
+        GITHUB_TOKEN1: ${{ steps.determine_token.outputs.TOKEN }}
         RELEASE_REPOSITORY: ${{ steps.determine_release_repository.outputs.RELEASE_REPOSITORY }}
-        RELEASE_TOKEN: ${{ steps.determine_token.outputs.RELEASE_TOKEN }}
+        GITHUB_TOKEN: ${{ steps.determine_token.outputs.RELEASE_TOKEN }}
         GPG_FINGERPRINT: ${{ inputs.gpg_fingerprint }}
         GH_EXT_BUILD_SCRIPT: ${{ inputs.build_script_override }}
         GH_RELEASE_TAG: ${{ steps.determine_release_tag.outputs.TAG }}
