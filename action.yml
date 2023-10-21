@@ -9,7 +9,7 @@ inputs:
     description: "GitHub token to use, defaults to `github.token` if unspecified"
   go_version:
     description: "The Go version to use for compiling (supports semver spec and ranges)"
-    default: "1.18"
+    default: "1.20"
   gpg_fingerprint:
     description: "GPG fingerprint to use for signing releases"
   release_repository:
